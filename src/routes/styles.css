@@ -29,8 +29,8 @@
 body {
 	min-height: 100vh;
 
-	background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-		url('../lib/images/noise.svg');
+	background: linear-gradient(rgba(226, 60, 60, 0.2), rgba(255, 0, 255, 0.2)),
+		url('../lib/images/noisy-gradient.png');
 	font-family: var(--font-mono);
 	inset: 0;
 	margin: auto;

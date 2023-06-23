@@ -4,7 +4,8 @@
 	import github from '$lib/images/github.svg';
 
 	const API_KEY = import.meta.env.VITE_GEOLOCATION_API;
-	let searchInput: string;
+	let searchInput: string = '';
+	let searchList: [] = [];
 	async function GETLocation(value: string) {
 		console.log(value);
 
@@ -13,13 +14,27 @@
 				`https://api.geoapify.com/v1/geocode/search?text=${value}&apiKey=${API_KEY}`
 			);
 			const data = await response.json();
+			searchList = data.features;
 			console.log(data);
-		} catch (error) {}
+			
+			return searchList;
+
+		} catch (error) {
+			console.error(error);
+			throw new Error('Error while fetching data from Geoapify API')
+		}
 	}
 </script>
 
-<header>
-	<div class="corner" />
+<header class="flex flex-col">
+
+
+
+	<div class="corner ">
+		<a href="https://github.com/PiwkaNorbert">
+			<img src={github} alt="GitHub" />
+		</a>
+	</div>
 
 	<nav>
 		<form
@@ -27,7 +42,8 @@
 			on:submit={(event) => {
 				event.preventDefault();
 				if (event?.target === null) return;
-				GETLocation(event?.target?.search.value);
+				searchInput = event?.target?.search.value;
+				GETLocation(searchInput);
 			}}
 		>
 			<svg
@@ -41,18 +57,33 @@
 					d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
 				/></svg
 			>
-			<input type="search" placeholder="Search for a Country" name="search" />
+			<input type="search"  placeholder="Search for a Country" name="search" />
 		</form>
+		{#if searchList && searchInput.length > 0}
+		<ul>
+		{#each searchList as items }
+				{#if items.properties.country}
+						<li>
+							<a
+								href="/country?search&lon={items.properties.lon}&lat={items.properties.lat}"
+								aria-current={page.pathname === '/country/{items.properties.country}'}
+							>
+								{items.properties.city}, {items.properties.state}, {items.properties.country}
+							</a>
+						</li>
+						{/if}
+						{/each}
+					</ul>
+		{/if}
 	</nav>
-
-	<div class="corner">
-		<a href="https://github.com/PiwkaNorbert">
-			<img src={github} alt="GitHub" />
-		</a>
-	</div>
 </header>
 
+
 <style>
+	*{
+		box-sizing: border-box;
+
+	}
 	header {
 		display: flex;
 		justify-content: space-between;
@@ -61,6 +92,7 @@
 	.corner {
 		width: 3em;
 		height: 3em;
+		align-self: end;
 	}
 
 	.corner a {
@@ -81,6 +113,8 @@
 		display: flex;
 		justify-content: center;
 		--background: hsl(var(--color-sec) / 80%);
+		position: relative;
+
 	}
 
 	svg {
@@ -97,7 +131,6 @@
 		align-items: center;
 		position: relative;
 		width: 420px;
-		box-sizing: border-box;
 
 		border: solid var(--border-md) hsl(var(--color-bg));
 		box-shadow: 4px 4px 0 hsl(var(--color-bg));
@@ -108,7 +141,6 @@
 		display: block;
 		position: absolute;
 		padding: 0.2em;
-		box-sizing: border-box;
 		left: 0.6em;
 	}
 	form input {
@@ -121,22 +153,42 @@
 		/* border: solid var(--border-md) hsl(var(--color-bg)); */
 	}
 
-	ul {
-		position: relative;
+	 ul {
 		padding: 0;
 		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
 		list-style: none;
-		background: var(--background);
-		background-size: contain;
+		top: 56px;
+		width: 420px;
+		position: absolute;
+		background-color: hsl(var(--color-bg));
+		border-inline: solid var(--border-md) hsl(var(--color-bg));
+		box-shadow: 4px 4px 0 hsl(var(--color-bg));
+
+		display: grid;
+		
+		align-items: center;
+
+	}
+	li {
+		width: 420px;
+		background-color: hsl(var(--color-bg));
+
+		
+
+
 	}
 
-	li {
-		position: relative;
+	li:hover {
+		background: hsl(var(--color-accent)/20% );
+		width: 420px;
+	}
+	li > a {
+		width: 100%;
 		height: 100%;
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+		color: hsl(var(--color-text));
 	}
 
 	li[aria-current='page']::before {
@@ -155,7 +207,7 @@
 		display: flex;
 		height: 100%;
 		align-items: center;
-		padding: 0 0.5rem;
+		padding: 0.5rem 1rem;
 		color: var(--color-text);
 		font-weight: 700;
 		font-size: 0.8rem;

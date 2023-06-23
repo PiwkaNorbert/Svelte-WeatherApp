@@ -2,34 +2,25 @@
 	import { onMount } from 'svelte';
 	import type { Root } from '../Utils/Interfaces';
 
-	export let latitude: number;
-	export let longitude: number;
+
 	let weatherApiReturn: Root;
 	const api = import.meta.env.VITE_API_KEY;
 	
 
+	const urlParams = new URLSearchParams(window.location.search);
 
-
-// check if the user has given permissionsto use geolocations
-
-
-// check if the window has a location search params if not get the location from the browser
-
+	const latitude = urlParams.get('lat');
+	const longitude = urlParams.get('lon');
 	onMount(() => {
-			getPosition();
+		
+		if (latitude && longitude) {
+			GET(+latitude, +longitude);
+		} else {
+			throw new Error('No location found');
+		}
 	});
 
-	async function getPosition() {
-		if (navigator.geolocation) {
-			navigator.geolocation.getCurrentPosition((pos) => {
-				latitude = pos.coords.latitude;
-				longitude = pos.coords.longitude;
-				GET(latitude, longitude);
-			});
-		} else {
-			console.log('Geolocation is not supported by this browser.');
-		}
-	}
+	
 	export async function GET(latitude: number, longitude: number) {
 		const res = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api}`
