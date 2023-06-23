@@ -1,9 +1,21 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github.svg';
 
-	export let searchInput;
+	const API_KEY = import.meta.env.VITE_GEOLOCATION_API;
+	let searchInput: string;
+	async function GETLocation(value: string) {
+		console.log(value);
+
+		try {
+			const response = await fetch(
+				`https://api.geoapify.com/v1/geocode/search?text=${value}&apiKey=${API_KEY}`
+			);
+			const data = await response.json();
+			console.log(data);
+		} catch (error) {}
+	}
 </script>
 
 <header>
@@ -14,6 +26,8 @@
 			class="flex"
 			on:submit={(event) => {
 				event.preventDefault();
+				if (event?.target === null) return;
+				GETLocation(event?.target?.search.value);
 			}}
 		>
 			<svg
@@ -27,16 +41,7 @@
 					d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
 				/></svg
 			>
-			<input
-				type="search"
-				placeholder="Search for a Country"
-				on:change={(event) => {
-					// bind the value from the input to the searchInput variable
-					if (event?.target === null) return;
-					searchInput = event.target.value;
-					console.log(searchInput);
-				}}
-			/>
+			<input type="search" placeholder="Search for a Country" name="search" />
 		</form>
 	</nav>
 
