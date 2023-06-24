@@ -23,14 +23,17 @@
 		--color-acc: #cc241d;
 		--color-pri: #af3a03;
 		--color-sec: #79740e;
+		--corlor-accent: #b16286;
+	
 	} */
+	--clr: rgb(50, 48, 47);
 }
 
 body {
 	min-height: 100vh;
 
-	background: linear-gradient(rgba(226, 60, 60, 0.2), rgba(255, 0, 255, 0.2)),
-		url('../lib/images/noisy-gradient.png');
+	background: linear-gradient(rgb(60 56 54), rgba(50 48 47)),
+		url('../lib/images/noise.svg');
 	font-family: var(--font-mono);
 	inset: 0;
 	margin: auto;

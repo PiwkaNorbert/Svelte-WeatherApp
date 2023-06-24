@@ -16,7 +16,7 @@
 // check if the window has a location search params if not get the location from the browser
 
 	onMount(() => {
-			getPosition();
+			// getPosition();
 	});
 
 	async function getPosition() {
@@ -24,15 +24,23 @@
 			navigator.geolocation.getCurrentPosition((pos) => {
 				latitude = pos.coords.latitude;
 				longitude = pos.coords.longitude;
-				GET(latitude, longitude);
+				getWeatherByCoords(latitude, longitude);
 			});
 		} else {
 			console.log('Geolocation is not supported by this browser.');
 		}
 	}
-	export async function GET(latitude: number, longitude: number) {
+	export async function getWeatherByCoords(latitude: number, longitude: number) {
 		const res = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api}`
+		);
+		weatherApiReturn = await res.json();
+
+		return weatherApiReturn;
+	}
+	export async function getWeatherBySearch(location: string) {
+		const res = await fetch(
+			`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${api}`
 		);
 		weatherApiReturn = await res.json();
 
@@ -60,7 +68,13 @@
 		<!-- JSX -->
 		<!-- if weatherApiReturn not null bind object  -->
 		{#if !weatherApiReturn}
-			<div>Loading...</div>
+
+			<p>Search for a city or allow location
+			</p>
+	
+			<br/>
+			<button on:click={getPosition}>Allow</button>
+
 		{/if}
 		{#if weatherApiReturn}
 			<h1>{weatherApiReturn.name}</h1>
@@ -195,10 +209,10 @@
 			<p>{weatherApiReturn.timezone}</p>
 
 			<h3>id</h3>
-			<p>{weatherApiReturn.id}</p>
-
+			
 			<h3>cod</h3>
 			<p>{weatherApiReturn.cod}</p>-->
+			<!-- <p>{weatherApiReturn.id}</p> -->
 		{/if}
 	</section>
 </main>

@@ -59,16 +59,18 @@
 			>
 			<input type="search"  placeholder="Search for a Country" name="search" />
 		</form>
-		{#if searchList && searchInput.length > 0}
+		{#if searchList }
 		<ul>
 		{#each searchList as items }
-				{#if items.properties.country}
+				{#if items.properties.city}
 						<li>
 							<a
-								href="/country?search&lon={items.properties.lon}&lat={items.properties.lat}"
-								aria-current={page.pathname === '/country/{items.properties.country}'}
+								href={`/country/${items.properties.city.toLowerCase().replace(/\s/g, "+").trim()}`}
+								rel="external nofollow noreferrer"
+								aria-current={page.pathname === `/country/${items.properties.city}`}
+
 							>
-								{items.properties.city}, {items.properties.state}, {items.properties.country}
+								{items.properties.city}, {items.properties.country_code}
 							</a>
 						</li>
 						{/if}

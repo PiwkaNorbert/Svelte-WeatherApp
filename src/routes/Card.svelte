@@ -1,36 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Root } from '../Utils/Interfaces';
 
-
-	let weatherApiReturn: Root;
-	const api = import.meta.env.VITE_API_KEY;
-	
-
-	const urlParams = new URLSearchParams(window.location.search);
-
-	const latitude = urlParams.get('lat');
-	const longitude = urlParams.get('lon');
-	onMount(() => {
-		
-		if (latitude && longitude) {
-			GET(+latitude, +longitude);
-		} else {
-			throw new Error('No location found');
-		}
-	});
-
-	
-	export async function GET(latitude: number, longitude: number) {
-		const res = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api}`
-		);
-		weatherApiReturn = await res.json();
-
-		return weatherApiReturn;
-	}
-
+	export let weatherApiReturn: Root;
 	// function to convert kalvin to calcius
+
 	function convertKelvinToCelsius(kelvin: number) {
 		if (kelvin < 0) {
 			return 'below absolute zero (0 K)';
@@ -41,11 +14,6 @@
 	const convertMetersToKilometers = (meters: number) => (meters / 1000).toFixed(1);
 </script>
 
-<svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
 <main>
 	<section class="flex flex-col align-center justify-center">
 		<!-- JSX -->
@@ -53,6 +21,9 @@
 		{#if !weatherApiReturn}
 			<div>Loading...</div>
 		{/if}
+
+	
+		
 		{#if weatherApiReturn}
 			<h1>{weatherApiReturn.name}</h1>
 			<div class="weather__temperature gap-2">
@@ -163,33 +134,11 @@
 					<p>
 						{weatherApiReturn.wind.speed}m/s
 					</p>
+					
 				</div>
 			</div>
+			<!-- <p>{weatherApiReturn.id}</p> -->
 
-			<!-- 
-			<h3>clouds</h3>
-			{#each Object.entries(weatherApiReturn.clouds) as [k, v]}
-				<h3>{k}</h3>
-				<p>{v}</p>
-			{/each}
-
-			<h3>dt</h3>
-			<p>{weatherApiReturn.dt}</p>
-
-			<h3>sys</h3>
-			{#each Object.entries(weatherApiReturn.sys) as [k, v]}
-				<h3>{k}</h3>
-				<p>{v}</p>
-			{/each}
-
-			<h3>timezone</h3>
-			<p>{weatherApiReturn.timezone}</p>
-
-			<h3>id</h3>
-			<p>{weatherApiReturn.id}</p>
-
-			<h3>cod</h3>
-			<p>{weatherApiReturn.cod}</p>-->
 		{/if}
 	</section>
 </main>
