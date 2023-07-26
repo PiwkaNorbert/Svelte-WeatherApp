@@ -1,22 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Root } from '../Utils/Interfaces';
+	import LocationCheck from '$lib/components/LocationCheck.svelte';
+	import Card from './Card.svelte';
 
 	export let latitude: number;
 	export let longitude: number;
 	let weatherApiReturn: Root;
 	const api = import.meta.env.VITE_API_KEY;
-	
-
-
-
-// check if the user has given permissionsto use geolocations
-
-
-// check if the window has a location search params if not get the location from the browser
 
 	onMount(() => {
-			// getPosition();
+		getPosition();
 	});
 
 	async function getPosition() {
@@ -68,13 +62,10 @@
 		<!-- JSX -->
 		<!-- if weatherApiReturn not null bind object  -->
 		{#if !weatherApiReturn}
+			<p>Search for a city or allow location</p>
 
-			<p>Search for a city or allow location
-			</p>
-	
-			<br/>
+			<br />
 			<button on:click={getPosition}>Allow</button>
-
 		{/if}
 		{#if weatherApiReturn}
 			<h1>{weatherApiReturn.name}</h1>

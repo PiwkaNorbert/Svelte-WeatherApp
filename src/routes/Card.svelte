@@ -22,8 +22,6 @@
 			<div>Loading...</div>
 		{/if}
 
-	
-		
 		{#if weatherApiReturn}
 			<h1>{weatherApiReturn.name}</h1>
 			<div class="weather__temperature gap-2">
@@ -134,11 +132,9 @@
 					<p>
 						{weatherApiReturn.wind.speed}m/s
 					</p>
-					
 				</div>
 			</div>
 			<!-- <p>{weatherApiReturn.id}</p> -->
-
 		{/if}
 	</section>
 </main>
